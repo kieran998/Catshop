@@ -159,6 +159,49 @@ public class CashierModel extends Observable
     setChanged(); notifyObservers(theAction); // Notify
   }
 
+  
+  //removing products from the basket by their product number
+  
+  public void doRemove(String prdNumber) {
+	  String theAction = "";
+	  String prdNum = prdNumber.trim();
+	  int prdLocation;
+	  int quantity;								// Product quantity
+
+	  if (theBasket == null) {
+		  theAction = "Basket is empty";
+	  }
+	  else if (theBasket.size() >= 1){
+		  prdLocation = isInBasket(prdNum);
+		  if(prdLocation == -1) {
+			  theAction = "Product not found";
+		  }
+		  else {
+			  theAction = "Product located";
+			  quantity = theBasket.get(prdLocation).getQuantity();
+			  if(quantity > 1) {
+				  theBasket.get(prdLocation).setQuantity(quantity - 1);
+				  theAction = "Removed Product " + prdNum;
+			  }
+			  else {
+				  theBasket.remove(prdLocation);
+			  }
+		  }
+	  }
+	  setChanged(); notifyObservers(theAction); 
+  }
+  
+// checks if product is in the basket (true = -1)
+  private int isInBasket(String prdNum) {
+	  int found = -1; 
+	  for(int i = 0 ;i < theBasket.size();i++) {
+		  if(theBasket.get(i).getProductNum().equals(prdNum)) {
+			  found = i;
+		  }
+	  }
+	  return found;
+  }
+  
   /**
    * ask for update of view callled at start of day
    * or after system reset
